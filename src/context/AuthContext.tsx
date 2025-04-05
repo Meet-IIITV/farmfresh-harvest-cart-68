@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type UserRole = 'customer' | 'farmer';
 
@@ -40,14 +40,23 @@ const MOCK_USERS: User[] = [
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Check for saved user in localStorage on initial load
   useEffect(() => {
     const savedUser = localStorage.getItem('farmFreshUser');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      
+      // Redirect based on role if on wrong path
+      if (parsedUser.role === 'farmer' && location.pathname === '/') {
+        navigate('/farmers');
+      } else if (parsedUser.role === 'customer' && location.pathname === '/farmers') {
+        navigate('/');
+      }
     }
-  }, []);
+  }, [location.pathname, navigate]);
 
   const login = (email: string, password: string, role: UserRole) => {
     // In a real app, you would make an API call to verify credentials

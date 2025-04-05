@@ -60,6 +60,7 @@ const ProfileMenu = () => {
           <div className="flex flex-col">
             <span>{user?.name}</span>
             <span className="text-xs text-gray-500">{user?.email}</span>
+            <span className="text-xs text-gray-500 capitalize">Role: {user?.role}</span>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -67,16 +68,6 @@ const ProfileMenu = () => {
           <User className="mr-2 h-4 w-4" />
           <span>My Profile</span>
         </DropdownMenuItem>
-        {user?.role === 'customer' && (
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link to="/farmers">Switch to Farmer View</Link>
-          </DropdownMenuItem>
-        )}
-        {user?.role === 'farmer' && (
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link to="/">Switch to Customer View</Link>
-          </DropdownMenuItem>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600">
           <LogOut className="mr-2 h-4 w-4" />

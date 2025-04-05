@@ -40,7 +40,9 @@ export const products: Product[] = [
     unit: "bunch",
     farmName: "Green Valley Farm",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 10,
+    farmerId: "farmer-123"
   },
   {
     id: "2",
@@ -52,7 +54,9 @@ export const products: Product[] = [
     unit: "each",
     farmName: "Sunshine Acres",
     inStock: true,
-    organic: false
+    organic: false,
+    quantity: 15,
+    farmerId: "farmer-456"
   },
   {
     id: "3",
@@ -64,7 +68,9 @@ export const products: Product[] = [
     unit: "500g",
     farmName: "Hill Heritage Grains",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 8,
+    farmerId: "farmer-789"
   },
   {
     id: "4",
@@ -76,7 +82,9 @@ export const products: Product[] = [
     unit: "head",
     farmName: "Green Valley Farm",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 12,
+    farmerId: "farmer-123"
   },
   {
     id: "5",
@@ -88,7 +96,9 @@ export const products: Product[] = [
     unit: "1kg",
     farmName: "River Valley Farms",
     inStock: true,
-    organic: false
+    organic: false,
+    quantity: 20,
+    farmerId: "farmer-321"
   },
   {
     id: "6",
@@ -100,7 +110,9 @@ export const products: Product[] = [
     unit: "bunch",
     farmName: "Sunshine Acres",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 7,
+    farmerId: "farmer-456"
   },
   {
     id: "7",
@@ -112,7 +124,9 @@ export const products: Product[] = [
     unit: "500g",
     farmName: "Meadow Brook Farm",
     inStock: true,
-    organic: false
+    organic: false,
+    quantity: 18,
+    farmerId: "farmer-654"
   },
   {
     id: "8",
@@ -124,7 +138,9 @@ export const products: Product[] = [
     unit: "750g",
     farmName: "Hill Heritage Grains",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 14,
+    farmerId: "farmer-789"
   },
   {
     id: "9",
@@ -136,7 +152,9 @@ export const products: Product[] = [
     unit: "each",
     farmName: "Green Valley Farm",
     inStock: true,
-    organic: false
+    organic: false,
+    quantity: 25,
+    farmerId: "farmer-123"
   },
   {
     id: "10",
@@ -148,7 +166,9 @@ export const products: Product[] = [
     unit: "kg",
     farmName: "Orchard Hills",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 15,
+    farmerId: "farmer-987"
   },
   {
     id: "11",
@@ -160,7 +180,9 @@ export const products: Product[] = [
     unit: "punnet",
     farmName: "Berry Good Farm",
     inStock: true,
-    organic: false
+    organic: false,
+    quantity: 10,
+    farmerId: "farmer-876"
   },
   {
     id: "12",
@@ -172,6 +194,8 @@ export const products: Product[] = [
     unit: "punnet",
     farmName: "Berry Good Farm",
     inStock: true,
-    organic: true
+    organic: true,
+    quantity: 8,
+    farmerId: "farmer-876"
   }
 ];
