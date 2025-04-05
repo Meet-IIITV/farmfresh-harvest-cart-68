@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,26 +49,37 @@ type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
   onSubmit: (data: Product) => void;
+  editProduct?: Product | null;
+  onCancel?: () => void;
   initialData?: Partial<Product>;
   isEditing?: boolean;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData, isEditing = false }) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
+const ProductForm: React.FC<ProductFormProps> = ({ 
+  onSubmit, 
+  editProduct = null, 
+  onCancel, 
+  initialData, 
+  isEditing = false 
+}) => {
+  const productToEdit = editProduct || initialData;
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    productToEdit?.image || null
+  );
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      category: initialData?.category || 'vegetable',
-      price: initialData?.price || 0,
-      unit: initialData?.unit || 'kg',
-      farmName: initialData?.farmName || '',
-      image: initialData?.image || '',
-      organic: initialData?.organic || false,
-      quantity: initialData?.quantity || 1,
-      inStock: initialData?.inStock !== undefined ? initialData.inStock : true
+      name: productToEdit?.name || '',
+      description: productToEdit?.description || '',
+      category: productToEdit?.category || 'vegetable',
+      price: productToEdit?.price || 0,
+      unit: productToEdit?.unit || 'kg',
+      farmName: productToEdit?.farmName || '',
+      image: productToEdit?.image || '',
+      organic: productToEdit?.organic || false,
+      quantity: productToEdit?.quantity || 1,
+      inStock: productToEdit?.inStock !== undefined ? productToEdit.inStock : true
     }
   });
 
@@ -91,16 +101,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData, isEdit
   const handleSubmit = (data: ProductFormValues) => {
     const productData: Product = {
       ...data,
-      id: initialData?.id || Date.now().toString(),
-      farmerId: '1' // In a real app, get this from authenticated user
+      id: productToEdit?.id || Date.now().toString(),
     };
     
     onSubmit(productData);
     
-    if (isEditing) {
-      toast.success('Product updated successfully!');
-    } else {
-      toast.success('Product added successfully!');
+    if (!productToEdit) {
       form.reset({
         name: '',
         description: '',
@@ -120,7 +126,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData, isEdit
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Product' : 'Add New Product'}</CardTitle>
+        <CardTitle>{productToEdit ? 'Edit Product' : 'Add New Product'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -314,9 +320,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData, isEdit
               </div>
             </div>
             
-            <Button type="submit" className="w-full bg-farm-green hover:bg-farm-green-dark">
-              {isEditing ? 'Update Product' : 'Add Product'}
-            </Button>
+            <div className="flex justify-between">
+              {onCancel && (
+                <Button type="button" variant="outline" onClick={onCancel}>
+                  Cancel
+                </Button>
+              )}
+              <Button type="submit" className="w-full bg-farm-green hover:bg-farm-green-dark">
+                {productToEdit ? 'Update Product' : 'Add Product'}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
