@@ -1,7 +1,6 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { Product } from '../data/products';
-import { toast } from '../components/ui/sonner';
+import { toast } from 'sonner';
 
 interface CartItem extends Product {
   quantity: number;
