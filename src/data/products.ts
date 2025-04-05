@@ -10,6 +10,23 @@ export interface Product {
   farmName: string;
   inStock: boolean;
   organic: boolean;
+  quantity: number; // Added missing property
+  farmerId?: string; // Added missing property
+}
+
+export interface SoilData {
+  id: string;
+  farmerId: string;
+  farmName: string;
+  soilType: string;
+  ph: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  moisture: number;
+  organicMatter: number;
+  location: string;
+  date: string;
 }
 
 export const products: Product[] = [
