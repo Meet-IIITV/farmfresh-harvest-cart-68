@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { Link } from 'react-router-dom';
 import ProfileMenu from './ProfileMenu';
+import { useAuth } from '@/context/AuthContext';
 
 const Navbar: React.FC = () => {
   const { toggleCart, totalItems } = useCart();
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
@@ -23,34 +25,47 @@ const Navbar: React.FC = () => {
         </div>
 
         <nav className="hidden md:flex space-x-6 ml-10">
-          <Link to="/" className="text-farm-green hover:text-farm-green-dark font-medium transition-colors">
-            Home
-          </Link>
-          <a href="#marketplace" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
-            Market
-          </a>
-          <Link to="/farmers" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
-            For Farmers
-          </Link>
+          {/* Only show Home and Market for customers or non-authenticated users */}
+          {(!isAuthenticated || (user && user.role === 'customer')) && (
+            <>
+              <Link to="/" className="text-farm-green hover:text-farm-green-dark font-medium transition-colors">
+                Home
+              </Link>
+              <a href="#marketplace" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
+                Market
+              </a>
+            </>
+          )}
+          
+          {/* Only show For Farmers for farmers or non-authenticated users */}
+          {(!isAuthenticated || (user && user.role === 'farmer')) && (
+            <Link to="/farmers" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
+              For Farmers
+            </Link>
+          )}
+          
           <a href="#" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
             About
           </a>
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            onClick={toggleCart} 
-            className="relative" 
-            aria-label="Shopping cart"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-farm-green text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </Button>
+          {/* Only show cart button for customers */}
+          {(!user || user.role === 'customer') && (
+            <Button 
+              variant="ghost" 
+              onClick={toggleCart} 
+              className="relative" 
+              aria-label="Shopping cart"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-farm-green text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+          )}
           <ProfileMenu />
         </div>
       </div>
