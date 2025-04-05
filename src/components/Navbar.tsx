@@ -19,8 +19,12 @@ const Navbar: React.FC = () => {
             <Menu className="h-6 w-6" />
           </Button>
           <Link to="/" className="flex items-center">
-            <span className="text-farm-green-dark text-xl font-bold">FarmFresh</span>
-            <span className="text-farm-brown ml-1 text-xl font-bold">Market</span>
+            <img 
+              src="/lovable-uploads/b39b8a65-0b1e-4327-bf8b-ea6f7e445296.png" 
+              alt="AgriSetu Logo" 
+              className="h-10 w-10 mr-2" 
+            />
+            <span className="text-farm-green-dark text-xl font-bold">AgriSetu</span>
           </Link>
         </div>
 

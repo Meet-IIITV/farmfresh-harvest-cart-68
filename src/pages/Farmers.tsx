@@ -46,11 +46,15 @@ const Farmers = () => {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center mb-4 md:mb-0">
-                <span className="text-farm-green-dark text-xl font-bold">FarmFresh</span>
-                <span className="text-farm-brown ml-1 text-xl font-bold">Market</span>
+                <img 
+                  src="/lovable-uploads/b39b8a65-0b1e-4327-bf8b-ea6f7e445296.png" 
+                  alt="AgriSetu Logo" 
+                  className="h-8 w-8 mr-2" 
+                />
+                <span className="text-farm-green-dark text-xl font-bold">AgriSetu</span>
               </div>
               <div className="text-sm text-gray-500">
-                &copy; {new Date().getFullYear()} FarmFresh Market. All rights reserved.
+                &copy; {new Date().getFullYear()} AgriSetu. All rights reserved.
               </div>
             </div>
           </div>

@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from 'sonner';
-import { Leaf } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -35,11 +34,14 @@ const Login = () => {
       <div className="container max-w-md mx-auto px-4">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <Leaf className="h-10 w-10 text-farm-green" />
+            <img 
+              src="/lovable-uploads/b39b8a65-0b1e-4327-bf8b-ea6f7e445296.png" 
+              alt="AgriSetu Logo" 
+              className="h-16 w-16" 
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center">
-            <span className="text-farm-green-dark">FarmFresh</span>
-            <span className="text-farm-brown ml-1">Market</span>
+            <span className="text-farm-green-dark">AgriSetu</span>
           </h1>
           <p className="text-gray-600">Sign in to access fresh produce directly from farmers</p>
         </div>
