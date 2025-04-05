@@ -11,4 +11,5 @@ export interface Product {
   organic?: boolean;
   farmerId?: string;
   quantity?: number;
+  inStock?: boolean;
 }
