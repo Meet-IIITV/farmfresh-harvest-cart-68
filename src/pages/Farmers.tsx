@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import Navbar from '@/components/Navbar';
 import FarmerDashboard from '@/components/farmer/FarmerDashboard';
 import { CartProvider } from '@/context/CartContext';
+import { Leaf } from 'lucide-react';
 
 const Farmers = () => {
   return (
@@ -17,12 +18,17 @@ const Farmers = () => {
           <section className="bg-gradient-to-br from-farm-cream to-white py-12 md:py-16">
             <div className="container px-4 md:px-6">
               <div className="text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-farm-green-dark rounded-full p-3">
+                    <Leaf className="h-8 w-8 text-white" />
+                  </div>
+                </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                   Farmer Portal
                 </h1>
                 <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
-                  List your farm-fresh produce directly to consumers. 
-                  Manage your product listings and connect with buyers.
+                  List your farm-fresh produce directly to consumers, analyze your soil quality, 
+                  and get crop recommendations tailored to your land.
                 </p>
               </div>
             </div>

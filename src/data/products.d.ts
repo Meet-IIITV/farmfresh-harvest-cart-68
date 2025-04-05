@@ -3,13 +3,28 @@ export interface Product {
   id: string;
   name: string;
   description: string;
+  category: "vegetable" | "fruit" | "grain";
   price: number;
-  category: string;
-  image: string;
   unit: string;
   farmName: string;
-  organic?: boolean;
+  image: string;
+  organic: boolean;
+  quantity: number;
+  inStock: boolean;
   farmerId?: string;
-  quantity?: number;
-  inStock?: boolean;
+}
+
+export interface SoilData {
+  id: string;
+  farmerId: string;
+  farmName: string;
+  soilType: string;
+  ph: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  moisture: number;
+  organicMatter: number;
+  location: string;
+  date: string;
 }
