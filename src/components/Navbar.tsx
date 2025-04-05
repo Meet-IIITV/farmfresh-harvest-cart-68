@@ -3,6 +3,7 @@ import React from 'react';
 import { ShoppingCart, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const { toggleCart, totalItems } = useCart();
@@ -14,22 +15,22 @@ const Navbar: React.FC = () => {
           <Button variant="ghost" size="icon" className="md:hidden mr-2">
             <Menu className="h-6 w-6" />
           </Button>
-          <a href="/" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <span className="text-farm-green-dark text-xl font-bold">FarmFresh</span>
             <span className="text-farm-brown ml-1 text-xl font-bold">Market</span>
-          </a>
+          </Link>
         </div>
 
         <nav className="hidden md:flex space-x-6 ml-10">
-          <a href="/" className="text-farm-green hover:text-farm-green-dark font-medium transition-colors">
+          <Link to="/" className="text-farm-green hover:text-farm-green-dark font-medium transition-colors">
             Home
-          </a>
+          </Link>
           <a href="#marketplace" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
             Market
           </a>
-          <a href="#" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
-            Farmers
-          </a>
+          <Link to="/farmers" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
+            For Farmers
+          </Link>
           <a href="#" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
             About
           </a>

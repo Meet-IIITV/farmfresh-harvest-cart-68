@@ -1,0 +1,57 @@
+
+import React from 'react';
+import { Toaster } from 'sonner';
+import Navbar from '@/components/Navbar';
+import FarmerDashboard from '@/components/farmer/FarmerDashboard';
+import { CartProvider } from '@/context/CartContext';
+
+const Farmers = () => {
+  return (
+    <CartProvider>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <Toaster />
+        
+        <main className="flex-grow">
+          {/* Hero Section */}
+          <section className="bg-gradient-to-br from-farm-cream to-white py-12 md:py-16">
+            <div className="container px-4 md:px-6">
+              <div className="text-center">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                  Farmer Portal
+                </h1>
+                <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                  List your farm-fresh produce directly to consumers. 
+                  Manage your product listings and connect with buyers.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Farmer Dashboard Section */}
+          <section className="py-12 bg-gray-50">
+            <div className="container px-4 md:px-6">
+              <FarmerDashboard />
+            </div>
+          </section>
+        </main>
+
+        <footer className="bg-gray-50 border-t border-gray-200 py-8">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="flex items-center mb-4 md:mb-0">
+                <span className="text-farm-green-dark text-xl font-bold">FarmFresh</span>
+                <span className="text-farm-brown ml-1 text-xl font-bold">Market</span>
+              </div>
+              <div className="text-sm text-gray-500">
+                &copy; {new Date().getFullYear()} FarmFresh Market. All rights reserved.
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </CartProvider>
+  );
+};
+
+export default Farmers;
