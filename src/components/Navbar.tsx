@@ -25,8 +25,8 @@ const Navbar: React.FC = () => {
         </div>
 
         <nav className="hidden md:flex space-x-6 ml-10">
-          {/* Only show Home and Market for customers or non-authenticated users */}
-          {(!isAuthenticated || (user && user.role === 'customer')) && (
+          {/* Show Home and Market for everyone when not logged in, and for customers when logged in */}
+          {(!isAuthenticated || !user || user.role === 'customer') && (
             <>
               <Link to="/" className="text-farm-green hover:text-farm-green-dark font-medium transition-colors">
                 Home
@@ -37,8 +37,8 @@ const Navbar: React.FC = () => {
             </>
           )}
           
-          {/* Only show For Farmers for farmers or non-authenticated users */}
-          {(!isAuthenticated || (user && user.role === 'farmer')) && (
+          {/* Show For Farmers for everyone when not logged in, and for farmers when logged in */}
+          {(!isAuthenticated || !user || user.role === 'farmer') && (
             <Link to="/farmers" className="text-gray-600 hover:text-farm-green-dark font-medium transition-colors">
               For Farmers
             </Link>
@@ -50,8 +50,8 @@ const Navbar: React.FC = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Only show cart button for customers */}
-          {(!user || user.role === 'customer') && (
+          {/* Only show cart button for customers or non-authenticated users */}
+          {(!isAuthenticated || !user || user.role === 'customer') && (
             <Button 
               variant="ghost" 
               onClick={toggleCart} 

@@ -28,6 +28,19 @@ const ProtectedRoute = ({ children, allowedRole }: { children: JSX.Element, allo
   return children;
 };
 
+// Routes that require authentication but allow guest preview
+const RoleBasedRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole: 'customer' | 'farmer' }) => {
+  const { isAuthenticated, user } = useAuth();
+  
+  // If authenticated, enforce role restrictions
+  if (isAuthenticated && user && user.role !== requiredRole) {
+    return <Navigate to={user.role === 'farmer' ? '/farmers' : '/'} />;
+  }
+  
+  // Allow guests or users with the correct role
+  return children;
+};
+
 const AppRoutes = () => {
   const { isAuthenticated, user } = useAuth();
   
@@ -44,14 +57,14 @@ const AppRoutes = () => {
           <Signup />
       } />
       <Route path="/" element={
-        <ProtectedRoute allowedRole="customer">
+        <RoleBasedRoute requiredRole="customer">
           <Index />
-        </ProtectedRoute>
+        </RoleBasedRoute>
       } />
       <Route path="/farmers" element={
-        <ProtectedRoute allowedRole="farmer">
+        <RoleBasedRoute requiredRole="farmer">
           <Farmers />
-        </ProtectedRoute>
+        </RoleBasedRoute>
       } />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
