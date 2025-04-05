@@ -99,9 +99,20 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   const handleSubmit = (data: ProductFormValues) => {
+    // Ensure all required Product fields are present
     const productData: Product = {
-      ...data,
       id: productToEdit?.id || Date.now().toString(),
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      unit: data.unit,
+      farmName: data.farmName,
+      image: data.image || '',
+      organic: data.organic,
+      quantity: data.quantity,
+      inStock: data.inStock,
+      farmerId: productToEdit?.farmerId || undefined
     };
     
     onSubmit(productData);
