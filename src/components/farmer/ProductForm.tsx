@@ -1,128 +1,169 @@
 
-import React from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Product } from '@/data/products';
-import { Switch } from '@/components/ui/switch';
 
-// Form validation schema
-const productSchema = z.object({
-  name: z.string().min(3, { message: 'Product name must be at least 3 characters' }),
-  description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
-  category: z.string().min(1, { message: 'Please select a category' }),
-  price: z.coerce.number().positive({ message: 'Price must be a positive number' }),
-  unit: z.string().min(1, { message: 'Unit is required (e.g., kg, lb, bunch)' }),
-  farmName: z.string().min(2, { message: 'Farm name must be at least 2 characters' }),
-  image: z.string().url({ message: 'Please enter a valid image URL' }),
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: 'Product name must be at least 2 characters.'
+  }),
+  description: z.string().min(10, {
+    message: 'Description must be at least 10 characters.'
+  }),
+  category: z.string().min(1, {
+    message: 'Please select a category.'
+  }),
+  price: z.number().positive({
+    message: 'Price must be positive.'
+  }),
+  unit: z.string().min(1, {
+    message: 'Unit is required (e.g., kg, lb, piece).'
+  }),
+  farmName: z.string().min(2, {
+    message: 'Farm name must be at least 2 characters.'
+  }),
+  image: z.string().optional(),
   organic: z.boolean().default(false),
-  quantity: z.coerce.number().int().positive({ message: 'Quantity must be a positive integer' }),
+  quantity: z.number().int().positive({
+    message: 'Quantity must be a positive integer.'
+  }),
+  inStock: z.boolean().default(true)
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
-  onSubmit: (product: Product) => void;
-  editProduct: Product | null;
-  onCancel: () => void;
+  onSubmit: (data: Product) => void;
+  initialData?: Partial<Product>;
+  isEditing?: boolean;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, editProduct, onCancel }) => {
-  // Initialize form with default values or editing product values
+const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData, isEditing = false }) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
+
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
-    defaultValues: editProduct 
-      ? { 
-          name: editProduct.name,
-          description: editProduct.description,
-          category: editProduct.category,
-          price: editProduct.price,
-          unit: editProduct.unit,
-          farmName: editProduct.farmName,
-          image: editProduct.image,
-          organic: editProduct.organic || false,
-          quantity: 10, // Default quantity if not available
-        }
-      : {
-          name: '',
-          description: '',
-          category: '',
-          price: 0,
-          unit: 'kg',
-          farmName: '',
-          image: 'https://images.unsplash.com/photo-1557844352-761f2548b18b?w=800&auto=format&fit=crop',
-          organic: false,
-          quantity: 10,
-        }
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+      category: initialData?.category || 'vegetable',
+      price: initialData?.price || 0,
+      unit: initialData?.unit || 'kg',
+      farmName: initialData?.farmName || '',
+      image: initialData?.image || '',
+      organic: initialData?.organic || false,
+      quantity: initialData?.quantity || 1,
+      inStock: initialData?.inStock !== undefined ? initialData.inStock : true
+    }
   });
 
-  const handleSubmit = (values: ProductFormValues) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // In a real app, you would upload this file to a server
+      // For demo purposes, we'll create a local URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setImagePreview(result);
+        form.setValue('image', result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (data: ProductFormValues) => {
     const productData: Product = {
-      id: editProduct?.id || '', // Will be generated if new product
-      ...values,
+      ...data,
+      id: initialData?.id || Date.now().toString(),
+      farmerId: '1' // In a real app, get this from authenticated user
     };
+    
     onSubmit(productData);
-    form.reset();
+    
+    if (isEditing) {
+      toast.success('Product updated successfully!');
+    } else {
+      toast.success('Product added successfully!');
+      form.reset({
+        name: '',
+        description: '',
+        category: 'vegetable',
+        price: 0,
+        unit: 'kg',
+        farmName: '',
+        image: '',
+        organic: false,
+        quantity: 1,
+        inStock: true
+      });
+      setImagePreview(null);
+    }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Fresh Carrots" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Product' : 'Add New Product'}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
+                      <Input placeholder="Enter product name" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="vegetables">Vegetables</SelectItem>
-                      <SelectItem value="fruits">Fruits</SelectItem>
-                      <SelectItem value="grains">Grains</SelectItem>
-                      <SelectItem value="herbs">Herbs & Spices</SelectItem>
-                      <SelectItem value="dairy">Dairy</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <select
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        <option value="vegetable">Vegetable</option>
+                        <option value="fruit">Fruit</option>
+                        <option value="grain">Grain</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <FormField
                 control={form.control}
                 name="price"
@@ -130,56 +171,66 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, editProduct, onCanc
                   <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                      <Input type="number" step="0.01" {...field} />
+                      <Input 
+                        type="number" 
+                        step="0.01"
+                        placeholder="0.00" 
+                        {...field}
+                        onChange={e => field.onChange(parseFloat(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
+              
               <FormField
                 control={form.control}
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Unit</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select unit" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="kg">Kilogram (kg)</SelectItem>
-                        <SelectItem value="lb">Pound (lb)</SelectItem>
-                        <SelectItem value="g">Gram (g)</SelectItem>
-                        <SelectItem value="bunch">Bunch</SelectItem>
-                        <SelectItem value="piece">Piece</SelectItem>
-                        <SelectItem value="dozen">Dozen</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input placeholder="kg, lb, piece, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity Available</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        {...field}
+                        onChange={e => field.onChange(parseInt(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="farmName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Farm Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your farm's name" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="farmName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Farm Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Green Valley Farms" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-6">
+            
             <FormField
               control={form.control}
               name="description"
@@ -188,8 +239,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, editProduct, onCanc
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Describe your product..." 
-                      className="min-h-[120px]" 
+                      placeholder="Describe your product" 
+                      className="min-h-24"
                       {...field} 
                     />
                   </FormControl>
@@ -197,75 +248,79 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, editProduct, onCanc
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Enter a URL for your product image
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4 items-end">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Available Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <FormLabel htmlFor="image">Product Image</FormLabel>
+                <Input 
+                  id="image"
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                {imagePreview && (
+                  <div className="mt-2">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="h-32 w-32 object-cover rounded-md border" 
+                    />
+                  </div>
                 )}
-              />
-
-              <FormField
-                control={form.control}
-                name="organic"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>Organic</FormLabel>
-                      <FormDescription>
-                        Is this product organic?
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              </div>
+              
+              <div className="flex flex-col justify-end">
+                <FormField
+                  control={form.control}
+                  name="organic"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Organic Product</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Check if this product is certified organic
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="inStock"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mt-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>In Stock</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Uncheck if this product is currently unavailable
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div className="flex gap-4 justify-end">
-          {editProduct && (
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+            
+            <Button type="submit" className="w-full bg-farm-green hover:bg-farm-green-dark">
+              {isEditing ? 'Update Product' : 'Add Product'}
             </Button>
-          )}
-          <Button type="submit" className="bg-farm-green hover:bg-farm-green-dark">
-            {editProduct ? 'Update Product' : 'Add Product'}
-          </Button>
-        </div>
-      </form>
-    </Form>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
 

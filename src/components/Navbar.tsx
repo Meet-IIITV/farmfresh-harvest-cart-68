@@ -4,6 +4,7 @@ import { ShoppingCart, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { Link } from 'react-router-dom';
+import ProfileMenu from './ProfileMenu';
 
 const Navbar: React.FC = () => {
   const { toggleCart, totalItems } = useCart();
@@ -36,7 +37,7 @@ const Navbar: React.FC = () => {
           </a>
         </nav>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <Button 
             variant="ghost" 
             onClick={toggleCart} 
@@ -50,6 +51,7 @@ const Navbar: React.FC = () => {
               </span>
             )}
           </Button>
+          <ProfileMenu />
         </div>
       </div>
     </header>
