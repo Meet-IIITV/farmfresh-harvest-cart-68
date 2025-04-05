@@ -26,11 +26,6 @@ const formSchema = z.object({
   farmName: z.string().min(2, 'Farm name is required'),
   soilType: z.string().min(1, 'Soil type is required'),
   ph: z.coerce.number().min(0).max(14, 'pH must be between 0 and 14'),
-  nitrogen: z.coerce.number().min(0, 'Nitrogen level must be positive'),
-  phosphorus: z.coerce.number().min(0, 'Phosphorus level must be positive'),
-  potassium: z.coerce.number().min(0, 'Potassium level must be positive'),
-  moisture: z.coerce.number().min(0).max(100, 'Moisture must be between 0 and 100%'),
-  organicMatter: z.coerce.number().min(0).max(100, 'Organic matter must be between 0 and 100%'),
   location: z.string().min(2, 'Location is required'),
 });
 
@@ -48,27 +43,23 @@ const SoilAnalysisForm: React.FC<SoilAnalysisFormProps> = ({ onSubmit, farmerId 
       farmName: '',
       soilType: 'loam',
       ph: 7,
-      nitrogen: 0,
-      phosphorus: 0,
-      potassium: 0,
-      moisture: 0,
-      organicMatter: 0,
       location: '',
     },
   });
 
   const handleSubmit = (data: SoilFormValues) => {
+    // Provide default values for removed fields
     const soilData: SoilData = {
       id: Date.now().toString(),
       farmerId,
       farmName: data.farmName,
       soilType: data.soilType,
       ph: data.ph,
-      nitrogen: data.nitrogen,
-      phosphorus: data.phosphorus,
-      potassium: data.potassium,
-      moisture: data.moisture,
-      organicMatter: data.organicMatter,
+      nitrogen: 10, // Default value
+      phosphorus: 10, // Default value
+      potassium: 10, // Default value
+      moisture: 5, // Default value
+      organicMatter: 2, // Default value
       location: data.location,
       date: new Date().toISOString(),
     };
@@ -142,76 +133,6 @@ const SoilAnalysisForm: React.FC<SoilAnalysisFormProps> = ({ onSubmit, farmerId 
                 <FormLabel>Soil pH (0-14)</FormLabel>
                 <FormControl>
                   <Input type="number" min="0" max="14" step="0.1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="nitrogen"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nitrogen (N) Level (mg/kg)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" step="1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phosphorus"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phosphorus (P) Level (mg/kg)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" step="1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="potassium"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Potassium (K) Level (mg/kg)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" step="1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="moisture"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Moisture Content (%)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" max="100" step="0.1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="organicMatter"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Organic Matter (%)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" max="100" step="0.1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
